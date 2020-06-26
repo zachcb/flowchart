@@ -1,0 +1,41 @@
+{
+    "data": {
+        "nodes": [
+            {
+                "id": "1",
+                "step": "1",
+                "name": "Node 1",
+                "next": ["2"],
+                "previous": []
+            },
+            {
+                "id": "2",
+                "step": "2",
+                "name": "Node 2",
+                "next": ["3", "4"],
+                "previous": ["1"]
+            },
+            {
+                "id": "3",
+                "step": "3",
+                "name": "Node 3",
+                "next": ["5"],
+                "previous": ["2"]
+            },
+            {
+                "id": "4",
+                "step": "4",
+                "name": "Node 4",
+                "next": [],
+                "previous": ["2"]
+            },
+            {
+                "id": "5",
+                "step": "5",
+                "name": "Node 5",
+                "next": ["6"],
+                "previous": ["3"]
+            }
+        ]
+    }
+}

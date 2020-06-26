@@ -1,0 +1,41 @@
+{
+    "data": {
+        "nodes": [
+            {
+                "id": "1",
+                "name": "Node 1",
+                "next": ["2"]
+            },
+            {
+                "id": "2",
+                "name": "Node 2",
+                "next": ["3"]
+            },
+            {
+                "id": "3",
+                "name": "Node 3",
+                "next": ["4"]
+            },
+            {
+                "id": "4",
+                "name": "Node 4",
+                "next": []
+            },
+            {
+                "id": "5",
+                "name": "Node 5",
+                "next": ["6"]
+            },
+            {
+                "id": "6",
+                "name": "Node 6",
+                "next": ["7"]
+            },
+            {
+                "id": "7",
+                "name": "Node 7",
+                "next": ["2"]
+            }
+        ]
+    }
+}

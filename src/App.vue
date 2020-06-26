@@ -1,17 +1,29 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Chart v-bind="{ nodes: chart.data, connections: chart.connections }" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import steps from '@/data/example.json';
+import prepareChart from '@/utils/chart';
+import Chart from './components/Chart.vue';
 
 export default {
   name: 'App',
+
   components: {
-    HelloWorld,
+    Chart,
+  },
+
+  computed: {
+    chart() {
+      return prepareChart(steps.data.nodes, {
+        padding: 0,
+        width: 100,
+        height: 100,
+      });
+    },
   },
 };
 </script>
