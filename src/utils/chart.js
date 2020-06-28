@@ -1,16 +1,3 @@
-// targetIds.forEach((targetId, index) => {
-//   const node = targetNodes[targetId];
-//   // const [column, row] = coordinates;
-
-//   if (index > 0) {
-//     nodes[targetId] = node;
-//   } else {
-//     // const previousNode = targetNodes[targetId];
-//     // const [previousColumn, previousRow] = previousCoordinates;
-
-//   }
-// });
-
 /*
  * This is needed to allow for space between grid items that have branches
  * that are longer than others.
@@ -32,17 +19,15 @@ function isEmpty(target) {
   );
 }
 
-function getDepth(entryNodeId, targetNodes) {
+function getDepth(entryNodeId, targetNodes, propertyName = 'previous') {
   const visitedNodeIds = [];
   let depth = 0;
-  // const node = targetNodes[entryNodeId];
-  // const depth = findTreeDepth(node.id, targetNodes, totalDepth);
 
   const traverse = (id) => {
     visitedNodeIds.push(id);
 
     if (targetNodes[id]) {
-      targetNodes[id].previous.forEach((previousId) => {
+      targetNodes[id][propertyName].forEach((previousId) => {
         const tmpDepth = traverse(previousId);
         depth += 1;
         if (tmpDepth > depth) {
@@ -67,22 +52,44 @@ function positionNodes(targetIds, targetNodes) {
     return nodes;
   }
 
-  const traverse = (id) => {
+  const activeId = (node.next && node.next[0]) || node.id;
+  // let activeColumn = 1;
+  // let activeRow = 0;
+
+  const traverse = (id, previousCoordinates = [0, 0]) => {
     if (targetNodes[id]) {
-      targetNodes[id].next.forEach((nextId) => {
-        const depth = getDepth(nextId, targetNodes);
-        const [columns, rows] = node.coordinates;
+      const [previousColumn, previousRow] = previousCoordinates;
+      const { previous } = targetNodes[id];
+      let column = 0;
+      let row = 0;
 
-        console.log(depth);
+      nodes[id] = targetNodes[id];
 
-        nodes[nextId] = { ...targetNodes[nextId], coordinates: [columns + depth, rows] };
+      // Check if previous node has multiple next items
 
-        traverse(nextId);
-      });
+      if (previous.length === 0) {
+        row = previousRow + 1;
+        nodes[id].coordinates = [column, row];
+      } else if (previous.length === 1) {
+        column = previousColumn + 1;
+        nodes[id].coordinates = [column, row];
+      } else if (previous.length > 1) {
+        column = getDepth(id, targetNodes, 'previous');
+        nodes[id].coordinates = [column, row];
+      }
+
+      // if (next.length > 1) {
+      //   // column = getDepth(id, targetNodes, 'next');
+      //   nodes[id].coordinates = [column, row];
+      // } else if (next.length === 0) {
+      //   row = 0;
+      // }
+
+      targetNodes[id].next.forEach((nextId) => traverse(nextId, [column, row]));
     }
   };
 
-  traverse(node.id);
+  traverse(activeId);
 
   return nodes;
 }
