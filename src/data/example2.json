@@ -10,7 +10,7 @@
             {
                 "id": "2",
                 "name": "Node 2",
-                "previous": ["2"],
+                "previous": ["1", "7"],
                 "next": ["3"]
             },
             {

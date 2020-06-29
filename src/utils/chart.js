@@ -27,8 +27,8 @@ function getDepth(entryNodeId, targetNodes, propertyName = 'previous') {
     visitedNodeIds.push(id);
 
     if (targetNodes[id]) {
-      targetNodes[id][propertyName].forEach((previousId) => {
-        const tmpDepth = traverse(previousId);
+      targetNodes[id][propertyName].forEach((item) => {
+        const tmpDepth = traverse(item);
         depth += 1;
         if (tmpDepth > depth) {
           depth = tmpDepth;
@@ -53,45 +53,73 @@ function positionNodes(targetIds, targetNodes) {
   }
 
   const activeId = (node.next && node.next[0]) || node.id;
-  // let activeColumn = 1;
-  // let activeRow = 0;
 
-  const traverse = (id, previousId, position = 0) => {
-    if (targetNodes[id]) {
-      const [previousColumn, previousRow] = nodes[previousId]
-        ? nodes[previousId].coordinates
+  const traversePrevious = (id, previousId, position = 0) => {
+    if (targetNodes[id] && !nodes[id]) {
+      const [previousColumn, previousRow] = targetNodes[previousId]
+        ? targetNodes[previousId].coordinates
         : [0, 0];
-      const { next, previous } = targetNodes[id];
+      const { next } = targetNodes[id];
       let column = 0;
       let row = 0;
 
       nodes[id] = targetNodes[id];
 
-      // Check if previous node has multiple next items
+      if (next.length === 0) {
+        row = previousRow - 1;
+        nodes[id].coordinates = [column, row + position];
+      } else if (next.length === 1) {
+        column = previousColumn - 1;
+        nodes[id].coordinates = [column, previousRow - position];
+      } else if (next.length > 1) {
+        column = getDepth(id, targetNodes, 'previous');
+        nodes[id].coordinates = [column, row + position];
+      }
+
+      targetNodes[id].previous.forEach(
+        (previousNodeId, index) => traversePrevious(
+          previousNodeId,
+          id, index,
+        ),
+      );
+    }
+  };
+
+  const traverse = (id, previousId, position = 0) => {
+    if (targetNodes[id] && !nodes[id]) {
+      const [previousColumn, previousRow] = targetNodes[previousId]
+        ? targetNodes[previousId].coordinates
+        : [0, 0];
+      const { previous } = targetNodes[id];
+      let column = 0;
+      let row = 0;
+
+      nodes[id] = targetNodes[id];
 
       if (previous.length === 0) {
         row = previousRow + 1;
         nodes[id].coordinates = [column, row + position];
       } else if (previous.length === 1) {
         column = previousColumn + 1;
-        nodes[id].coordinates = [column, row + position];
+        nodes[id].coordinates = [column, previousRow + position];
       } else if (previous.length > 1) {
-        column = getDepth(id, targetNodes, 'previous');
+        column = getDepth(id, targetNodes, 'previous') - 1;
         nodes[id].coordinates = [column, row + position];
       }
 
-      // if (previous.length) {
+      targetNodes[id].next.forEach(
+        (nextNodeId, index) => traverse(
+          nextNodeId,
+          id, index,
+        ),
+      );
 
-      // }
-
-      if (next.length > 1) {
-        // column = getDepth(id, targetNodes, 'next');
-        nodes[id].coordinates = [column, row + position];
-      } else if (next.length === 0) {
-        row = 0;
-      }
-
-      targetNodes[id].next.forEach((nextId, index) => traverse(nextId, id, index));
+      targetNodes[id].previous.forEach(
+        (previousNodeId, index) => traversePrevious(
+          previousNodeId,
+          id, index,
+        ),
+      );
     }
   };
 
@@ -115,8 +143,8 @@ function applySettings(targetIds, targetNodes, settings = {}) {
       nodes[targetId] = {
         ...targetNodes[targetId],
         coordinates: [
-          (column * settings.width) + settings.padding,
-          (row * settings.height) + settings.padding,
+          (column * settings.width) + settings.padding + window.innerWidth / 4,
+          (row * settings.height) + settings.padding + window.innerHeight / 2,
         ],
       };
     }
@@ -183,9 +211,6 @@ function initialize(targetNodes = [], settings = {}) {
   nodes = positionNodes(ids, nodes, settings);
   nodes = applySettings(ids, nodes, settings);
   const connections = createConnections(ids, nodes, settings);
-
-  console.log(ids.map((id) => nodes[id]).filter((id) => id));
-  console.log(connections);
 
   return {
     data: ids.map((id) => nodes[id]).filter((id) => id),

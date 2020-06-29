@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import steps from '@/data/example2.json';
+import steps from '@/data/example3.json';
 import prepareChart from '@/utils/chart';
 import Chart from './components/Chart.vue';
 
@@ -19,7 +19,7 @@ export default {
   computed: {
     chart() {
       return prepareChart(steps.data.nodes, {
-        padding: 25,
+        padding: 0,
         width: 100,
         height: 100,
       });
@@ -40,7 +40,6 @@ body, html {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 
   height: 100%;
   width: 100%;
