@@ -1,0 +1,20 @@
+{
+    "eslint.enable": true,
+    
+    "eslint.run": "onType",
+ 
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "html"
+    ],
+
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+
+    "files.associations": {
+      "*.svelte": "html",
+      "*.css": "postcss"
+   }
+}
