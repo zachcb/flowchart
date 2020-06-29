@@ -4,43 +4,36 @@
             {
                 "id": "1",
                 "name": "Node 1",
-                "previous": [],
                 "next": ["2"]
             },
             {
                 "id": "2",
                 "name": "Node 2",
-                "previous": ["2"],
                 "next": ["3"]
             },
             {
                 "id": "3",
                 "name": "Node 3",
-                "previous": ["2"],
                 "next": ["4"]
             },
             {
                 "id": "4",
                 "name": "Node 4",
-                "previous": ["3"],
                 "next": []
             },
             {
                 "id": "5",
                 "name": "Node 5",
-                "previous": [],
                 "next": ["6"]
             },
             {
                 "id": "6",
                 "name": "Node 6",
-                "previous": ["5"],
                 "next": ["7"]
             },
             {
                 "id": "7",
                 "name": "Node 7",
-                "previous": ["6"],
                 "next": ["2"]
             }
         ]

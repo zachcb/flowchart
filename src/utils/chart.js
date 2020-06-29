@@ -56,10 +56,12 @@ function positionNodes(targetIds, targetNodes) {
   // let activeColumn = 1;
   // let activeRow = 0;
 
-  const traverse = (id, previousCoordinates = [0, 0]) => {
+  const traverse = (id, previousId, position = 0) => {
     if (targetNodes[id]) {
-      const [previousColumn, previousRow] = previousCoordinates;
-      const { previous } = targetNodes[id];
+      const [previousColumn, previousRow] = nodes[previousId]
+        ? nodes[previousId].coordinates
+        : [0, 0];
+      const { next, previous } = targetNodes[id];
       let column = 0;
       let row = 0;
 
@@ -69,23 +71,27 @@ function positionNodes(targetIds, targetNodes) {
 
       if (previous.length === 0) {
         row = previousRow + 1;
-        nodes[id].coordinates = [column, row];
+        nodes[id].coordinates = [column, row + position];
       } else if (previous.length === 1) {
         column = previousColumn + 1;
-        nodes[id].coordinates = [column, row];
+        nodes[id].coordinates = [column, row + position];
       } else if (previous.length > 1) {
         column = getDepth(id, targetNodes, 'previous');
-        nodes[id].coordinates = [column, row];
+        nodes[id].coordinates = [column, row + position];
       }
 
-      // if (next.length > 1) {
-      //   // column = getDepth(id, targetNodes, 'next');
-      //   nodes[id].coordinates = [column, row];
-      // } else if (next.length === 0) {
-      //   row = 0;
+      // if (previous.length) {
+
       // }
 
-      targetNodes[id].next.forEach((nextId) => traverse(nextId, [column, row]));
+      if (next.length > 1) {
+        // column = getDepth(id, targetNodes, 'next');
+        nodes[id].coordinates = [column, row + position];
+      } else if (next.length === 0) {
+        row = 0;
+      }
+
+      targetNodes[id].next.forEach((nextId, index) => traverse(nextId, id, index));
     }
   };
 
